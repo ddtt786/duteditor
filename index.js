@@ -72,21 +72,49 @@ class List {
   }
 
   push(data) {
-    socket.emit("action", {
-      id: this.id,
-      variableType: "list",
-      type: "append",
-      data,
-    });
+    socket.emit(
+      "action",
+      {
+        id: this.id,
+        variableType: "list",
+        type: "append",
+        data,
+      },
+      (_, { key }) => {
+        this.data.list.push(key);
+      }
+    );
   }
 
   remove(index) {
-    socket.emit("action", {
-      id: this.id,
-      variableType: "list",
-      type: "delete",
-      index,
-    });
+    socket.emit(
+      "action",
+      {
+        id: this.id,
+        variableType: "list",
+        type: "delete",
+        index,
+      },
+      () => {
+        this.data.list.splice(index, 1);
+      }
+    );
+  }
+
+  insert(index, data) {
+    socket.emit(
+      "action",
+      {
+        id: this.id,
+        variableType: "list",
+        type: "insert",
+        index,
+        data,
+      },
+      (_, { key }) => {
+        this.data.list.splice(index, 0, key);
+      }
+    );
   }
 
   set(index, data) {
